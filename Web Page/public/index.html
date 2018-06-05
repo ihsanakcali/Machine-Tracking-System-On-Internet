@@ -1,0 +1,50 @@
+<html>
+
+<head>
+    <title>Makine Takip Sistemi</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+    <script src="https://www.gstatic.com/firebasejs/5.0.3/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyDPRQDICxgiJz6hSQ5p-EaC2ijuLOurj20",
+            authDomain: "makine-takip-sistemi.firebaseapp.com",
+            databaseURL: "https://makine-takip-sistemi.firebaseio.com",
+            projectId: "makine-takip-sistemi",
+            storageBucket: "makine-takip-sistemi.appspot.com",
+            messagingSenderId: "1099004059531"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <script src="controller.js"></script>
+</head>
+
+<body>
+     <h1>Makine Takip Sistemi - Takip Verileri</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Akım</th>
+                    <th scope="col">Devir</th>
+                    <th scope="col">Sıcaklık</th>
+                    <th scope="col">Titreşim Seviyesi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>1</th>
+                    <td><span id="current"></span></td>
+                    <td><span id="rpm"></span></td>
+                    <td><span id="temperature"></span></td>
+                    <td><span id="vibration"></span></td>
+                </tr>
+            </tbody>
+        </table>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+</body>
+</html>
