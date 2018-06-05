@@ -1,0 +1,184 @@
+1.	GİRİŞ
+Fabrikalarda, araçlarda ve sanayinin birçok sektöründe sürekli olarak kontrol edilmesi gereken makine ve donanımları bulunmaktadır. Bu çalışmada, makinelerin durumunu takip ederek, makinelerde ortaya çıkan arızaların, daha hızlı arıza tespiti yapılarak, daha kısa sürede çözülmesi hedeflenmiştir. 
+Makine motoruna bağlı sensörler aracılığıyla motorun çektiği akım, sıcaklık, titreşim seviyesi, dakikada gerçekleşen devir sayısı ölçümlerini alarak, Arduino Mega mikrodenetleyicisine bağlı ekranda görüntüleyen, i2c veri yolu ile ölçüm değerlerini esp8266-01 mikrodenetleyicisine aktararak ve Google’ın Firebase servisi aracılığıyla ölçümlerin internet üzerinden sürekli takip edilebilmesine imkan sağlayan bir sistem tasarlanmıştır.
+Proje sonucunda donanım ve yazılım kontrolü ile kullanıcının ve üreticinin makineyi internet üzerinden takip edebilmesi ve alınan verilere göre makineye gerekli durumlarda müdahale edilmesi hedeflenmiştir.
+
+2. ARDUINO VE BİLEŞENLER
+2.1. Donanımsal Gereksinimler
+Projede Arduino Mega 2560 mikrodenetleyicisi, ESP8266-01 mikrodenetleyicisi, NEMA 17 Step Motor, INA219 akım sensörü, SW-420 titreşim sensörü, LM35 sıcaklık sensörü, US1881 Hall Etkisi sensörü, A4988 step motor sürücüsü ve 16x2 LCD ekran kullanılmıştır.
+
+2.1.1. Arduino Mega 2560 
+Arduino Mega 2560 ATmega2560 mikrodenetleyici içeren bir Arduino kartıdır. Arduino Mega 2560 'ta 54 tane dijital giriş / çıkış pini vardır. Bunlardan 15 tanesi PWM çıkışı olarak kullanılabilir. Ayrıca 16 adet analog girişi, 4 UART (donanım seri port), bir adet 16 MHz kristal osilatörü, USB bağlantısı, power jakı (2.1mm), ICSP başlığı ve reset butonu bulunmaktadır. Arduino Mega 2560 bir mikrodenetleyiciyi desteklemek için gerekli bileşenlerin hepsini içerir. Arduino Mega 2560 bir bilgisayara bağlanarak, bir adaptör ile ya da pil ile çalıştırılabilir. Arduino programlama için harici bir programlayıcıya ihtiyaç duyulmaz, çünkü mikrodenetleyicide önceden bir bootloader programı yazılıdır.
+ 
+2.1.2. ESP8266-01 
+	ESP8266-01, mikro denetleyicilerin Wi-Fi ağına erişmesini sağlayan bir Wi-Fi modülüdür. ESP8266 sadece bir Wi-Fi ağına erişim sağlamakla kalmayıp, aynı zamanda bir mikrodenetleyici olarak da kullanılabilmektedir. 
+Özellikleri:
+•	802.11 b / g / n uyumlu
+•	Wi-Fi Direct (P2P), yazılımsal AP
+•	Entegre TCP / IP protokol yığını
+•	4 adet GPIO pini
+•	Besleme gerilimi: 3.3V-5V 
+•	Entegre TR anahtarı, balun, LNA, güç amplifikatörü ve eşleşen ağ
+•	Entegre PLL'ler, regülatörler, DCXO ve güç yönetimi birimleri
+•	802.11b modunda + 19,5dBm çıkış gücü
+•	1MB Flash Bellek
+•	Entegre düşük güçlü 32-bit CPU, uygulama işlemcisi olarak kullanılabilir
+•	SDIO 1.1 / 2.0, SPI, UART
+•	STBC, 1 × 1 MIMO, 2 × 1 MIMO
+•	A-MPDU ve A-MSDU toplama ve 0.4ms koruma aralığı
+•	Bekleme gücü tüketimi <1.0mW (DTIM3)
+
+2.1.3. NEMA 17 Step Motor
+NEMA 17-boyutlu 1.8 ° adım açısına sahip (200 adım / devir) hibrid Unipolar/bipolar step motordur.  Her faz 4 V ile 1.2 A çalışır ve 3.2 kg-cm bir durdurma torkuna sahiptir.
+ Altı renk kablosu bulunmaktadır. Motor hem unipolar ve bipolar step motor sürücüleri tarafından kontrol edilebilir. Tek kutuplu step motor sürücüsü ile kullanıldığında altı kablo kullanılmaktadır. Bipolar step motor sürücüsü ile kullanıldığında sarı ve beyaz kablolar bağlanmamaktadır. 
+Özellikleri:
+•	Boyutu: 42.3 mm kare × 48 mm, mili dahil değil (NEMA 17)
+•	Ağırlık: 350 gr 
+•	Devir Başına Adımlar: 200
+•	Akım Değeri: Bobin Başına 1.2 A
+•	Gerilim Değeri: 4 V
+•	Direnç: Bobin Başına 3.3 Ω
+•	Tutma Torku: 3.2 kg/cm 
+•	Endüktans: Bobin Başına 2.8 mH
+•	Kablo Uzunluğu: 30 cm
+•	Çıkış mili rulmanlar tarafından desteklenmiştir.
+
+2.1.4. INA219 Akım Sensörü
+INA219, I2C seri protokolünü kullanan bir akım sensörü modülüdür. Sadece şönt direnci üzerindeki değişikleri değil, ayrıca üzerindeki voltaj değerleri de okunabilir ve bu sayede üstündeki güç hesaplanabilir.
+Bu modül 0.1 ohm %1  toleranstaki hassas direnç ile gelir. Üstündeki direnç ile ±3.2A aralığında, 12 bit'te 0.8mA hassaslıkta ölçüm yapabilir.
+Özellikleri:
+•	20A’e kadar çift yönlü akım ölçme
+•	0.1 ohm 1% 2W akım algılama direnci
+•	± 0.8mA hassaslık ile ± 3.2A'ya kadar akım ölçümü
+•	Besleme gerilimi: 3V-5V 
+•	I2C seri protokolü
+•	0V - 26 V aralığında voltaj ölçümü
+•	16 programlanabilir adres
+Şekil 2.4: INA219
+ 
+2.1.5. A4988 Step Motor Sürücü
+  A4988 Step Motor Sürücü Kartı, Allegro'nun en kullanışlı mikrostep çift kutuplu bipolar step motor sürücüsüdür. Sürücünün akım sınırlaması, yüksek akım koruması ve 5 farklı mikrostep çözünürlüğü vardır. 8-35V arasında çalışabilir ve  her bobin için 1 A (zorlanmada ve soğutucu ile beraber kullanımda 2A) akım vermektedir. 
+  Sürücünün sorunsuz kullanımı ve dış etkenlerden kolay etkilenmemesi için motor çıkışlarına hızlı diyotlar koyulması daha verimli olur. Bu sayede, motoru etkileyen ters kuvvet sürücüye herhangi bir zarar veremez.
+
+Özellikleri:
+•	Basit bir adım ve yön kontrol arayüzü
+•	Beş farklı adım çözünürlüğü: Tam adım, Yarım adım, Çeyrek adım, Sekizinci adım ve Onaltıncı adım
+•	Ayarlanabilir akım kontrolü: Daha yüksek adım oranları elde etmek için step motorun nominal geriliminden yukarıda gerilim kullanmasına olanak veren bir potansiyometre ile maksimum akım çıkışı ayarlanabilir.
+•	Akıllı değişme kontrolü otomatik olarak doğru akım yavaşlama modunu seçer(hızlı yavaşlama veya yavaş yavaşlama).
+•	Aşırı sıcaklıkta termal kapatma, düşük voltaj ve yüksek akım korumaları vardır.
+•	Kısa devre koruması mevcuttur.
+   
+2.1.6. LM35 Sıcaklık Sensörü
+Yarı iletken bir yapıya sahip olan LM35, hassas ve küçük değerli sıcaklık ölçümleri için kullanılabilen bir analog sıcaklık sensörüdür. Çıkış geriliminin sıcaklık farkına göre doğrusal değişmesi prensibi ile çalışır. Bir derece değişim çıkış voltajını 10 mV değiştirir.
+Özellikleri:
+•	Besleme gerilimi: 4V – 30V
+•	Çalışma sıcaklığı: -55⁰C – 150⁰C
+•	Ölçüm hassasiyeti: 0.5⁰C
+•	100 µA'dan daha az akım çeker.
+•	Düşük empedanslı çıkış
+ 
+2.1.7. US1881 Hall Etkisi Sensörü
+US1881 entegre Hall Etkisi sensörüdür. Sensöre yaklaştırılan mıknatıs, çıkış pininin lojik seviyesinin değişmesine sebep olur.
+Bu cihaz manyetik algı için çip üzerinde Hall voltaj jeneratörüne, Hall voltajını arttıran karşılaştırıcıya, gürültüyü engellemek için kesiklik değiştirmeyi sağlayan Schmitt tetikleyiciye ve açık toplayıcı çıkışına sahiptir. Dahili bandgap düzenleyici, dahili devreler için sıcaklık dengeleyici voltaj kaynağını sağlamak için kullanılır ve geniş bir işlem güç aralığına imkan sağlar.
+Özellikler:
+•	Besleme gerilimi 3.5V – 24V
+•	Düşük akım tüketimi
+•	Sıcaklık dengeleme
+•	Geniş işlem voltaj aralığı
+•	Açık-toplayıcılı pre-sürücü
+•	50mA’lık maksimum kaynak çıkış akımı
+•	Ters kutup koruması
+•	 Kurşunsuz Paket: TO-92
+ 
+2.1.8. SW-420 Titreşim Sensörü
+SW-420 titreşim modülü, eşiği aşan herhangi bir titreşimin olup olmadığını saptamak için SW-420 titreşim sensörüne ve karşılaştırıcı LM393'e dayanmaktadır. Eşik, yerleşik potansiyometre ile ayarlanabilir. Sensör titreşim olmadığında, “LOW” sinyali verir, eşiği aşan titreşim algıladığında “HIGH” sinyali verir.
+•	Kurşunsuz Paket: TO-92
+•	Anahtarın varsayılan durumu kapalıdır.
+•	Dijital çıkış
+•	Besleme gerilimi: 3.3V-5V
+•	Sonuçları göstermek için yerleşik gösterge LED'i
+•	LM393 çipi
+•	Pano boyutları: 3.2cm x 1.4cm
+
+2.2. Yazılımsal Gereksinimler
+2.2.1. Geliştirme Ortamları
+Arduino üzerinde çalışacak kod Arduino IDE üzerinde C++ programlama dili kullanılarak geliştirilmiştir.
+
+2.2.2. Kullanılan Kütüphaneler
+•	Ölçüm verilerini 16x2 lcd ekranda görüntüleyebilmek için LiquidCrystal.h
+•	Firebase’e ölçümleri göndermek için Node.js ve FirebaseArduino.h
+•	Arduino Mega2560 ve ESP8266-01’in I2C veri yolu ile haberleşmesini sağlamak için Wire.h
+•	INA219 sensörü ile ölçüm alabilmek için Adafruit_INA219.h
+kütüphanesi kullanılmıştır.
+
+3. SİSTEM DETAYLARI  
+3.1. Bileşenlerin Bağlantısı
+
+3.1.1. NEMA 17 Step Motor
+Step motorun 1 nolu bobininin giriş pinine A4988 üzerindeki 1A, 1 nolu bobinin çıkış pini 1B pinine bağlanmıştır. 2 nolu bobininin giriş pinine A4988 üzerindeki 2A, 2 nolu bobinin çıkış pini 2B pinine bağlanmıştır.
+
+3.1.2. ESP8266-01  
+ESP8266-01 mikrodenetleyicisi, Arduino Mega2560 ile I2C veri yolu üzerinden haberleşmektedir. ESP8266-01 üzerindeki sırasıyla GPIO0 ve GPIO2 pinleri Arduino Mega2560 üzerindeki sırasıyla SDA ve SCL pinlerine bağlanmıştır. 
+ 
+3.1.3. A4988 Step Motor Sürücüsü
+A4988 üzerindeki, motorun dönme yönünü belirleyen “DIRECTION” pini Arduino Mega2560 üzerindeki 4 pinine, A4988 üzerindeki, motora milin 1.8° dönmesi için sinyal gönderirken kullanılan “STEP” pini Arduino üzerindeki 3 pinine bağlanmıştır. A4988 üzerindeki, step açısını belirleyen MS3, MS2, MS1 pinleri kullanılmadığı için her step sinyalinde motor mili 1.8° dönecektir. A4988 üzerindeki, “RESET” pini aktif olana kadar çeviriciyi ana duruma getirip FET çıkışlarını kapatan “SLEEP” ve “RESET” pinleri birbirine bağlanmıştır. Step motora güç vermek için “VMOT” pinine 9V adaptör bağlandı.
+
+3.1.4. US1881 Hall Etkisi Sensörü
+US1881 üzerindeki “VOUT” pini Arduino üzerindeki 18 pinine ve 10k direnç ile “5v” girişine bağlanmıştır.
+
+3.1.5. SW-420 Titreşim Sensörü
+SW-420’nin “VOUT” pini Arduino üzerindeki 2 pinine bağlanmıştır.
+
+3.1.6. LM35 Sıcaklık Sensörü
+LM35’in “VOUT” pini Arduino üzerindeki A7 pinine bağlanmıştır. Ayrıca LM35’in “GND” ve “5V” pini diğer modüllerle paylaşılmayacak şekilde bağlanmıştır.
+
+3.1.7. INA219 Akım Sensörü
+INA219 akım sensörü Arduino Mega2560 ile I2C veri yolu üzerinden haberleşmektedir. INA219 üzerindeki sırasıyla SDA ve SCL pinleri Arduino Mega2560 üzerindeki sırasıyla SDA ve SCL pinlerine bağlanmıştır.
+
+3.1.8. 16x2 LCD Ekran
+16x2 LCD 4bit modda çalışması için üzerindeki “RS”, “EN”, “d4”, ”d5”, “d6”, “d7” pinleri Arduino üzerindeki sırasıyla 10, 9, 8, 7, 6, 5 pinlerine bağlanmıştır. 16x2 LCD’nin “3” pini kontrastı ayarlamak için kullanılmaktadır. 
+Fakat kontrast ayarlamaya ihtiyaç duyulmadığı için doğrudan toprağa bağlandı, bu durumda maksimum kontrastı vermektedir.
+
+3.2. Bileşenlerinin Programlanması
+3.2.1. ESP8266-01  
+ESP8266-01 mikrodenetleyicisine Arduino MEGA2560 mikrodenetleyicisine bağlı sensörlerden elde edilen 4 adet ölçüm değeri, 8 bitlik parçalara bölünerek I2C veri yolu üzerinden gönderildi. Node.js ve FirebaseArduino.h kütüphanesi kullanılarak bu ölçüm verileri Firebase veri tabanına gönderildi.
+
+3.2.2. A4988 Step Motor Sürücüsü
+A4988 üzerindeki, motorun dönme yönünü belirleyen “DIRECTION” pinine bağlı olan Arduino Mega2560 üzerindeki 4 pinine “LOW” sinyali yollandı. A4988 üzerindeki motora, milin kullanılan “STEP” pini Arduino üzerindeki 3 pinine bağlanmış olan pin “LOW” durumundan “HIGH” durumuna geçtiğinde motor mili 1.8° dönmektedir, daha sonra 3 pini tekrar “LOW” durumuna getirilmektedir. Aynı işlem belirli aralıklarla tekrarlanarak motorun sürekli dönmesi sağlandı.
+
+3.2.3. US1881 Hall Etkisi Sensörü
+US1881 manyetik alan algıladığında "VOUT” pininden “HIGH” sinyali verdikten sonra, manyetik alan algılamasa dahi “HIGH” sinyali vermeye devam etmektedir.  Mıknatısın ters kutbu yaklaştırıldığında ise “LOW” durumuna geçer. Sensörün “VOUT” pinine bağlı Arduino üzerindeki 18 pini, dahili 10k dirençle giriş olarak tanımlandı ve kesme fonksiyonu yazılarak 18 pininin “HIGH” konumuna geçtiği süreler ölçülerek devir sayısı hesaplandı.
+
+3.2.4. SW-420 Titreşim Sensörü
+SW-420 her titreşim algılandığında “Vout” pininden “HIGH” sinyali, titreşim algılanmadığı durumlarda ise “LOW” sinyali verir. Sensörün “VOUT” pinine bağlı Arduino üzerindeki 2 pini giriş olarak tanımlandı ve kesme fonksiyonu yazılarak 2 pininin “HIGH” konumuna geçtiği süreler ölçülerek titreşim sıklığı hesaplandı.
+
+3.2.5. LM35 Sıcaklık Sensörü
+LM35’in “VOUT” pininin voltajı 1°C başına 10mV artar. Örneğin; oda sıcaklığı 18 °C ise çıkış 180 mV olur. Arduino Mega2560 üzerindeki A7 pinindeki voltaj değeri 10 bitlik dahili ADC ile 0-1023 arasında sayısal bir değere çevrilir. Bu değer 0.48828125 sayısıyla çarpılarak sıcaklık °C cinsinden elde edildi.
+
+3.2.6. INA219 Akım Sensörü
+INA219 kütüphanesini kullanılarak I2C veri yolu üzerinden ölçüm değerleri mA cinsinden elde edildi.
+
+3.2.7. 16x2 LCD Ekran
+16x2 LCD ekranda “LiquidCrystal.h” kütüphanesi kullanılarak sensör verileri görüntülendi. 
+
+3.2.8. Web Sayfası
+Html ve Javascript ile yazılan web sayfasında Firebase veritabanından okunan sensör verileri canlı olarak takip edilebilmektedir. Web sayfasına https://makine-takip-sistemi.firebaseapp.com/ adresinden ulaşılabilmektedir.
+  
+
+4. SONUÇ 
+Proje sonucunda veriler, ESP8266-01 Wi-Fi modulü ile internet ortamına başarıyla aktarılmıştır. 
+       Ölçtüğümüz akım 1A’dan az olduğu için ACS712-20A sensörünün ölçüm aralığının  projemiz için büyük ve çözünürlüğünün düşük olmasından dolayı donanım değişikliği yapılarak ACS712-20A yerine INA219 akım sensörü kullandıldı. İnternet ortamına sensör verilerinin yollayabilmesi için ESP8266-01 Wi-Fi modülü eklenmiştir. Firebase veritabanından okunan veriler anlık olarak web sayfasında görüntülenebilmektedir. Ücretsiz ve esnek çözüm sunduğu için ölçüm verilerini ve web sayfasını saklamak için Google Firebase servisi kullanıldı. 
+
+KAYNAKLAR
+
+[1]	http://reprap.org/wiki/Stepper_motor
+[2]	https://www.melexis.com/en/documents/documentation/datasheets/us1881
+[3]	https://www.pololu.com/file/0J450/A4988.pdf
+[4]	http://fab.cba.mit.edu/classes/863.06/11.13/44780.pdf
+[5]	https://www.allegromicro.com/~/media/Files/Datasheets/ACS712-Datasheet.ashx
+[6]	http://www.ti.com/lit/ds/symlink/lm35.pdf
+[7]	http://www.theorycircuit.com/sw-420-vibration-sensor-arduino-interface/
+[8]	https://www.arduino.cc/reference/en/language/functions/time/millis/
+[9]	https://thewanderingengineer.com/2015/05/06/sending-16-bit-and-32-bit-numbers-with-arduino-i2c/
+[10]	http://www.circuitbasics.com/basics-of-the-i2c-communication-protocol/
+[11] https://firebase.google.com/docs/storage/web/start
