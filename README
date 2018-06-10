@@ -54,7 +54,6 @@ Bu modül 0.1 ohm %1  toleranstaki hassas direnç ile gelir. Üstündeki direnç
 •	I2C seri protokolü
 •	0V - 26 V aralığında voltaj ölçümü
 •	16 programlanabilir adres
-Şekil 2.4: INA219
  
 2.1.5. A4988 Step Motor Sürücü
   A4988 Step Motor Sürücü Kartı, Allegro'nun en kullanışlı mikrostep çift kutuplu bipolar step motor sürücüsüdür. Sürücünün akım sınırlaması, yüksek akım koruması ve 5 farklı mikrostep çözünürlüğü vardır. 8-35V arasında çalışabilir ve  her bobin için 1 A (zorlanmada ve soğutucu ile beraber kullanımda 2A) akım vermektedir. 
@@ -181,4 +180,4 @@ KAYNAKLAR
 [8]	https://www.arduino.cc/reference/en/language/functions/time/millis/
 [9]	https://thewanderingengineer.com/2015/05/06/sending-16-bit-and-32-bit-numbers-with-arduino-i2c/
 [10]	http://www.circuitbasics.com/basics-of-the-i2c-communication-protocol/
-[11] https://firebase.google.com/docs/storage/web/start
+[11]    https://firebase.google.com/docs/storage/web/start
